@@ -1,5 +1,5 @@
 module.exports = {
-  init: function init(arg) {
+  setup: function setup(arg) {
     this.arg = arg;
   },
   handle: function handle(next, request, response) {
