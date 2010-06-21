@@ -38,6 +38,10 @@ r.get(/^\/(123)/)
  .module('file')
  .module('send');
 
+r.get(/^\/files\/.*$/).module('static', __dirname, '/files/').bind(function (next, request, response) {
+  response.sendBody('Could not find ' + request.url);
+});
+
 sys.puts(sys.inspect(r.routes));
 
 r.listen(8080);
