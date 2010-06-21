@@ -27,8 +27,9 @@ r.addModule('send', function (next, request, response) {
 
 r.addModule('file', __dirname + '/test-module');
 
-r.get('/123')
- .bind(function (next, request, response) {
+r.get(/^\/(123)/)
+ .bind(function (next, request, response, $1) {
+    sys.puts($1);
     sys.puts(sys.inspect(request.parseUrl()));
     response.setBody('test');
     next();
