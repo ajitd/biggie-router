@@ -25,6 +25,8 @@ r.addModule('send', function (next, request, response) {
   response.sendBody(response.body);
 });
 
+r.addModule('file', __dirname + '/test-module');
+
 r.get('/123')
  .bind(function (next, request, response) {
     sys.puts(sys.inspect(request.parseUrl()));
@@ -32,6 +34,7 @@ r.get('/123')
     next();
   })
  .module('123ify', 123, 'ify')
+ .module('file')
  .module('send');
 
 sys.puts(sys.inspect(r.routes));
