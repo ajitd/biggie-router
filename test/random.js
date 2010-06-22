@@ -4,12 +4,12 @@ var Router = require('../lib/biggie-router'),
 
 var r = new Router();
 
-r.bind(function (next, request, response) {
+r.bind(function (request, response, next) {
   sys.puts(sys.inspect(request));
   next();
 });
 
-r.get('/').bind(function (next, request, response) {
+r.get('/').bind(function (request, response, next) {
   response.sendBody('Hello World!');
 });
 
@@ -18,21 +18,21 @@ r.addModule('123ify', {
     this.arg1 = arg1;
     this.arg2 = arg2;
   },
-  handle: function handle(next, request, response) {
+  handle: function handle(request, response, next) {
     response.setBody(this.arg1);
     response.appendBody(new Buffer(this.arg2));
     next();
   }
 });
 
-r.addModule('send', function (next, request, response) {
+r.addModule('send', function (request, response, next) {
   response.sendBody(response.body);
 });
 
 r.addModule('file', __dirname + '/test-module');
 
 r.get(/^\/(123)/)
- .bind(function (next, request, response, $1) {
+ .bind(function (request, response, next, $1) {
     sys.puts($1);
     sys.puts(sys.inspect(request.parseUrl()));
     response.setBody('test');
@@ -42,7 +42,7 @@ r.get(/^\/(123)/)
  .module('file')
  .module('send');
 
-r.get(/^\/files\/.*$/).module('gzip').module('static', __dirname, '/files').bind(function (next, request, response) {
+r.get(/^\/files\/.*$/).module('gzip').module('static', __dirname, '/files').bind(function (request, response, next) {
   response.sendBody('Could not find ' + request.url);
 });
 
