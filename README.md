@@ -24,16 +24,18 @@
      });
 
     // Modules. Add your own, and use some of the defaults.
-    r.addModule('laser', {
-      handle: function (request, response, next) {
+    r.addModule('laser', function () {
+      return function (request, response, next) {
         response.appendBody('\nGoes pow!');
         next();
       }
     });
-    // or
-    r.addModule('cannon', function (request, response, next) {
-      response.appendBody('\nGoes boom!');
-      next();
+
+    r.addModule('cannon', function () {
+      return function (request, response, next) {
+        response.appendBody('\nGoes boom!');
+        next();
+      }
     });
     // or as a module
     r.addModule('file', './common-js');
