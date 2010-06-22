@@ -4,6 +4,11 @@ var Router = require('../lib/biggie-router'),
 
 var r = new Router();
 
+r.bind(function (next, request, response) {
+  sys.puts(sys.inspect(request));
+  next();
+});
+
 r.get('/').bind(function (next, request, response) {
   response.sendBody('Hello World!');
 });
@@ -40,7 +45,5 @@ r.get(/^\/(123)/)
 r.get(/^\/files\/.*$/).module('gzip').module('static', __dirname, '/files/').bind(function (next, request, response) {
   response.sendBody('Could not find ' + request.url);
 });
-
-sys.puts(sys.inspect(r.routes));
 
 r.listen(8080);
