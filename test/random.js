@@ -13,20 +13,18 @@ r.get('/').bind(function (request, response, next) {
   response.sendBody('Hello World!');
 });
 
-r.addModule('123ify', {
-  setup: function setup(arg1, arg2) {
-    this.arg1 = arg1;
-    this.arg2 = arg2;
-  },
-  handle: function handle(request, response, next) {
-    response.setBody(this.arg1);
-    response.appendBody(new Buffer(this.arg2));
+r.addModule('123ify', function (arg1, arg2) {
+  return function (request, response, next) {
+    response.setBody(arg1);
+    response.appendBody(new Buffer(arg2));
     next();
-  }
+  };
 });
 
-r.addModule('send', function (request, response, next) {
-  response.sendBody(response.body);
+r.addModule('send', function () {
+  return function (request, response, next) {
+    response.sendBody(response.body);
+  };
 });
 
 r.addModule('file', __dirname + '/test-module');
