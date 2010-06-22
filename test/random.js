@@ -38,7 +38,7 @@ r.get(/^\/(123)/)
  .module('file')
  .module('send');
 
-r.get(/^\/files\/.*$/).module('static', __dirname, '/files/').bind(function (next, request, response) {
+r.get(/^\/files\/.*$/).module('gzip').module('static', __dirname, '/files/').bind(function (next, request, response) {
   response.sendBody('Could not find ' + request.url);
 });
 
