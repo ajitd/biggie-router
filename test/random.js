@@ -5,8 +5,7 @@ var Router = require('../lib/biggie-router'),
 var r = new Router();
 
 r.get('/').bind(function (next, request, response) {
-  response.writeHead(200);
-  response.end('Hello World!');
+  response.sendBody('Hello World!');
 });
 
 r.addModule('123ify', {
