@@ -5,7 +5,7 @@ var Router = require('../lib/biggie-router'),
 var r = new Router();
 
 r.bind(function (request, response, next) {
-  sys.puts(sys.inspect(request));
+  sys.puts(request.method + ' Request to ' + request.url);
   next();
 });
 
