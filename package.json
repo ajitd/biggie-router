@@ -11,6 +11,9 @@
     "type": "git",
     "url": "http://github.com/biggie/biggie-router.git"
   },
+  "dependencies": {
+    "vows": ">=0.4.1"
+  },
   "engine": [ "node >=0.1.90" ],
   "directories": {
     "lib": "./lib/biggie-router"
