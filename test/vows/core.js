@@ -23,7 +23,7 @@ router.all('/all').
   response.sendBody('passed');
 });
 
-router.bind(function (request, response) {
+router.get('/notfound').bind(function (request, response) {
   response.sendBody(404, 'passed');
 });
 

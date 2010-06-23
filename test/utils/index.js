@@ -21,7 +21,7 @@ module.exports.getContext = function getContext(options) {
         }
       }).end();
     },
-    respondsWith: function (code, body) {
+    respondsWith: function (code, body, headers) {
       var context = {
         topic: function () {
           var req    = this.context.name.split(/ +/), // ["POST", "/"]
@@ -41,7 +41,12 @@ module.exports.getContext = function getContext(options) {
         }
       };
 
-      context['should respond with ' + code + ', ' + body] = function (err, response) {
+      var label = body ? body : 'null';
+      if (label.length > 50) {
+        label = label.replace(/\s+/g, ' ').slice(0, 100) + '...';
+      }
+
+      context['should respond with ' + code + ', ' + label] = function (err, response) {
         assert.equal(response.statusCode, code);
 
         if (response.body instanceof Buffer) {
@@ -50,6 +55,15 @@ module.exports.getContext = function getContext(options) {
 
         assert.equal(response.body, body);
       };
+
+      if (headers) {
+        Object.keys(headers).forEach(function (header) {
+          header = header.toLowerCase();
+          context['should have header ' + header + ': ' + headers[header]] = function (err, response) {
+            assert.equal(response.headers[header], headers[header]);
+          }
+        });
+      }
 
       return context;
     }
