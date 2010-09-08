@@ -1,7 +1,7 @@
 {
   "name": "biggie-router",
   "description": "The router as part of the biggie framework.",
-  "version": "0.1.10",
+  "version": "0.1.11",
   "author": "Tim Smart",
   "licenses": [{
     "type": "MIT",
@@ -14,8 +14,6 @@
   "dependencies": {
     "vows": ">=0.4.1"
   },
-  "engine": [ "node >=0.1.90" ],
-  "directories": {
-    "lib": "./lib/biggie-router"
-  }
+  "engine": [ "node >=0.2.0" ],
+  "main": "./lib/biggie-router
 }
