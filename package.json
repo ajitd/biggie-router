@@ -15,5 +15,5 @@
     "vows": ">=0.4.1"
   },
   "engine": [ "node >=0.2.0" ],
-  "main": "./lib/biggie-router
+  "main": "./lib/biggie-router"
 }
