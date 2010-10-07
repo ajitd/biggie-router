@@ -1,3 +1,0 @@
-[submodule "lib/biggie-router/middleware"]
-	path = lib/biggie-router/middleware
-	url = git://github.com/Tim-Smart/node-middleware.git
