@@ -1,11 +1,5 @@
-     _     _             _                            _             
-    | |__ (_) __ _  __ _(_) ___       _ __ ___  _   _| |_  ___ _ __ 
-    | '_ \| |/ _` |/ _` | |/ _ \_____| '__/ _ \| | | | __|/ _ \ '__|
-    | |_) | | (_| | (_| | |  __/_____| | | (_) | |_| | |_|  __/ |   
-    |_.__/|_|\__, |\__, |_|\___|     |_|  \___/ \__,_|\__|\___|_|   
-             |___/ |___/                                           _
 
-Biggie-router is a high performance, extendable router for use in frameworks and applications. It draws inspiration from several popular open source frameworks and libraries, such as [jQuery](http://www.jquery.com/) and [Sinitra](http://www.sinatrarb.com/).
+Biggie-router is a high performance, extendable router for use in frameworks and applications. It draws inspiration from several popular open source frameworks and libraries, such as [jQuery](http://www.jquery.com/) and [Sinatra](http://www.sinatrarb.com/).
 
 ## License
 
