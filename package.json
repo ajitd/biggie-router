@@ -4,13 +4,12 @@
   "version": "0.1.14",
   "author": "Tim Smart",
   "licenses": [{
-    "type": "MIT",
-    "url": ""
+    "type": "MIT"
   }],
   "repository": {
     "type": "git",
     "url": "http://github.com/biggie/biggie-router.git"
   },
   "engine": [ "node >=0.3.0" ],
-  "main": "./lib/biggie-router"
+  "main": "./"
 }
