@@ -124,15 +124,6 @@ Router.prototype.parallel = function parallel() {
   return route;
 };
 
-// Proxy method to create a new route with 'module'
-Router.prototype.use = function use() {
-  var route = new Route(this, {
-    catch_all: true
-  });
-  this.routes.push(route);
-  return route.use.apply(route, arguments);
-};
-
 // Proxy method to create a new route with 'bind'
 Router.prototype.bind = function bind() {
   var route = new Route(this, {
@@ -320,13 +311,6 @@ Route.prototype._checkRoute = function _checkRoute(route) {
   }
   log('Warning: The route "' + route + '" was of unrecognised type.');
   return false;
-};
-
-// use: A module processing layer
-Route.prototype.use = function use(module) {
-  this.layers.push(module);
-
-  return this;
 };
 
 // bind: A simple processing layer

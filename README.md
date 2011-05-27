@@ -49,68 +49,12 @@ Requests that fall through (don't match any conditions) get passed to the next r
 
 ---
 
-Modules are functions that return a function, enabling you to do per-route setup. Biggie-router comes with the following default modules (not an exhaustive list):
+Modules are functions that return a function, enabling you to do per-route setup. No modules are supplied with biggie-router, however middleware use the same pattern as connect (or express); so generic connect middleware should also be compatible with biggie. The npm `middleware` module is also compatible.
 
-* `static` - Serve static files
-* `gzip` - Compress data with gzip
+Usage is as follows:
 
-There are also a few extra methods added to the response object, which make it easier to form responses:
+    var middleware = require('middleware');
 
-* `setBody` - Set the `body` property to any value. Arguments: `data`
-* `appendBody` - Append a value to the `body` property. Arguments: `data`
-* `getBody` - Retrieve the value of `body`, specify encoding as first argument to grab the string value.
-* `send` - Quick way to send a response. Arguments are: `statusCode`, `body`, `headers`
-* `sendBody` - Quickest way to send a response. Determines the best way to send the content. Objects are formed into JSON, strings are send as HTML. Arguments are: `statusCode`, `body`, `headers`
-* `sendJson` - Send a Object or String as JSON. Arguments: `statusCode`, `json`, `headers`
-* `sendText` - Send a String as `text/plain`. Arguments: `statusCode`, `text`, `headers`
-* `sendHeaders` - Similar to the Node.js `writeHead`, except it will add extra headers to make them more compliant with browsers. Arguments: `statusCode`, `headers`, `body`. Specifying the `body` argument will ensure the `Content-Lenth` header is set to the correct value.
-* `sendRedirect` - Send the browser a redirect. Arguments: `location`, `body`, `headers`
+    router.get('/').bind(middleware.sendfile('public/'));
 
-*Note: `statusCode` is an optional argument for all `send` methods.*
-
-Here we create a 'post' module, which pre-buffers the POST data for later use. We then call `next` to drop to the next processing layer, which in this case is a binded function that sends off the response.
-
-    var Router = require('biggie-router');
-    var router = new Router();
-
-    router.addModule('post', function () {
-      return function (request, response, next) {
-        response.addListener('data', function (buffer) {
-          response.appendBody(buffer);
-        });
-        response.addListener('end', function () {
-          next();
-        });
-      };
-    });
-
-    router.post('/').module('post').bind(function (request, response, next) {
-      // response.body now contains the POST data
-      // Send it back to the browser
-      response.sendBody(200, response.body);
-    });
-
-    router.listen(8080);
-
-Modules can also be Common-JS modules. The following will send 'Modularized!' to the browser:
-
-`module.js`
-
-    module.exports = function (text) {
-      return function (request, response, next) {
-        response.setBody(text);
-        next();
-      };
-    };
-
-`router.js`
-
-
-    var Router = require('biggie-router');
-    var router = new Router();
-
-    router.addModule('modularize', './module');
-
-    router.module('modularize', 'Modularized!').bind(function (request, response, next) {
-      response.sendBody(200, response.body);
-    });
+    router.post('/users').bind(api('users', 'create'));
