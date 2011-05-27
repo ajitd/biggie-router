@@ -1,20 +1,36 @@
 //
 // biggie-router
-// (c) Tim Smart 2010
-//
-// Released under the MIT license
-// See {insert_link} for license
+// 
+// The MIT License
+// 
+// Copyright (c) 2010 Tim Smart
+// 
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+// 
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
+// 
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+// THE SOFTWARE.
 //
 
 var http     = require('http'),
-    sys      = require('sys'),
     url      = require('url'),
-    Buffer   = require('buffer').Buffer,
     next_ext = require('./lib/next');
 
 var log = function log(message) {
   // TODO: Insert date/time
-  sys.puts('[router][' + '] ' + message);
+  console.log('[router][' + '] ' + message);
 };
 
 var noop = function () {};
@@ -25,9 +41,6 @@ var Router = function Router(config) {
 
   // Routes container
   this.routes = [];
-
-  // Module container
-  this.modules = require('./lib/middleware');
 
   // The default config
   this.config = {
@@ -53,12 +66,7 @@ var Router = function Router(config) {
 };
 
 // Extend http.Server
-Router.prototype = (function () {
-  var Server = function () {};
-  Server.prototype = http.Server.prototype;
-  return new Server();
-})();
-Router.prototype.constructor = Router;
+Router.prototype.__proto__ = http.Server.prototype;
 
 // All requests proxy through this method
 Router.prototype._onRequest = function _onRequest(request, response) {
@@ -102,24 +110,6 @@ Router.prototype._onRequest = function _onRequest(request, response) {
   this.routes[i].handle(request, response, next);
 };
 
-// Add a new module
-Router.prototype.addModule = function addModule(name, module) {
-  if (typeof module === 'string') {
-    // Add a module via filesystem
-    try {
-      module = require(module);
-      this.addModule(name, module);
-    } catch (error) {
-      log('Error: ' + error.message);
-    }
-  } else if (typeof module === 'function') {
-    // Function that return a function module
-    this.modules[name] = module;
-  } else {
-    log('Warning: Module "' + name + '" was not of recognised type.');
-  }
-};
-
 // Low level api to manually create Route
 Router.prototype.createRoute = function createRoute(config) {
   return new Route(this, config);
@@ -135,12 +125,12 @@ Router.prototype.parallel = function parallel() {
 };
 
 // Proxy method to create a new route with 'module'
-Router.prototype.module = function module() {
+Router.prototype.use = function use() {
   var route = new Route(this, {
     catch_all: true
   });
   this.routes.push(route);
-  return route.module.apply(route, arguments);
+  return route.use.apply(route, arguments);
 };
 
 // Proxy method to create a new route with 'bind'
@@ -179,6 +169,11 @@ Router.prototype.put = function put() {
   return this._proxyMethod('put', arguments)
 };
 
+// Proxy method to create a new route with 'patch'
+Router.prototype.patch = function patch() {
+  return this._proxyMethod('patch', arguments)
+};
+
 // Proxy method to create a new route with 'del'
 Router.prototype.del = function del() {
   return this._proxyMethod('del', arguments)
@@ -203,6 +198,7 @@ var Route = function Route(router, config) {
     GET: [],
     POST: [],
     PUT: [],
+    PATCH: [],
     DELETE: [],
     OPTIONS: []
   };
@@ -326,16 +322,9 @@ Route.prototype._checkRoute = function _checkRoute(route) {
   return false;
 };
 
-// module: A module processing layer
-Route.prototype.module = function module() {
-  var args = Array.prototype.slice.call(arguments),
-      name = args.shift();
-
-  if (typeof name === 'string' && this.router.modules[name]) {
-    var module = this.router.modules[name];
-    module = module.apply(null, args);
-    this.layers.push(module);
-  }
+// use: A module processing layer
+Route.prototype.use = function use(module) {
+  this.layers.push(module);
 
   return this;
 };
@@ -356,6 +345,7 @@ Route.prototype.all = function all(route) {
     this.table.GET.push(route);
     this.table.POST.push(route);
     this.table.PUT.push(route);
+    this.table.PATCH.push(route);
     this.table.DELETE.push(route);
     this.table.OPTIONS.push(route);
   }
@@ -385,6 +375,11 @@ Route.prototype.put = function put(route) {
   return this._addRoute('PUT', route);
 };
 
+// patch: Matches against patch requests
+Route.prototype.patch = function patch(route) {
+  return this._addRoute('PATCH', route);
+};
+
 // del: Matches against delete requests
 Route.prototype.del = function del(route) {
   return this._addRoute('DELETE', route);
@@ -395,6 +390,4 @@ Route.prototype.options = function options(route) {
   return this._addRoute('OPTIONS', route);
 };
 
-if (module.exports) {
-  module.exports = Router;
-}
+module.exports = Router;
