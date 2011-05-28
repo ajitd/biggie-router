@@ -57,6 +57,7 @@ var Router = function Router(config) {
     });
   }
 
+  this.next = next_ext;
   next_ext.setDefaultHeaders(this.config.headers);
 
   // The underlying server
