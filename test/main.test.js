@@ -3,8 +3,12 @@ var assert = require('assert'),
 
 var r = new Router;
 
+r.next.bend = function () {
+  this.send('Bending')
+}
+
 r.bind(function (request, response, next) {
-  next.send('Testing');
+  next.bend();
 });
 
 r.listen(8080);

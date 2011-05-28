@@ -66,6 +66,8 @@ var Router = function Router(config) {
   return this;
 };
 
+Router.next = next_ext;
+
 // Extend http.Server
 Router.prototype.__proto__ = http.Server.prototype;
 
